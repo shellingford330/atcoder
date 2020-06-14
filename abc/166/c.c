@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-int acs(const void *a, const void *b) { 
-  return *(int*)a - *(int*)b;
+int acs(const void *x, const void *y) { 
+  return *(int*)x - *(int*)y;
 } /* 1,2,3,4.. */
 int des(const void *a, const void *b) {
   return *(int*)b - *(int*)a;
@@ -23,13 +23,19 @@ int cmp_str(const void *a, const void *b) {
 typedef long long int lli;
 
 int main(void) {
-  long double a, b, h, m;
-  scanf("%Lf %Lf %Lf %Lf", &a, &b, &h, &m);
+	int n, m;
+	scanf("%d %d", &n, &m);
+	int h[MAX], a[MAX], b[MAX];
+	rep(i, 1, n+1) scanf("%d", &h[i]);
+	rep(i, 0, m) scanf("%d %d", &a[i], &b[i]);
 
-  long double max = max(h * 30.0 + m / 60.0 * 30.0, m * 6.0);
-  long double min = min(h * 30.0 + m / 60.0 * 30.0, m * 6.0);
-  long double rad = (max - min) / 180.0 * M_PI;
-  long double c = a * a + b * b - 2.0 * a * b * cosl(rad);
-  printf("%.10Lf\n", sqrtl(c));
+	int maxh[MAX] = {0};
+	rep(i, 0, m) {
+		maxh[a[i]] = max(h[b[i]], maxh[a[i]]);
+		maxh[b[i]] = max(h[a[i]], maxh[b[i]]);
+	}
+	int ans = 0;
+	rep(i, 1, n+1) if (maxh[i] < h[i]) ans++;
+	printf("%d\n", ans);
   return 0;
 }

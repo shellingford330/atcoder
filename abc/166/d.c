@@ -17,19 +17,30 @@ int cmp_str(const void *a, const void *b) {
 #define min(a,b) (a < b ? a : b)
 #define max(a,b) (a > b ? a : b)
 #define rep(i, l, r) for (int i = l; i < r; i++)
+#define pow5(i) i * i * i * i * i
 #define MAX 100001
 #define MOD 1000000007
-#define INF 1000000009
+#define INF 1000000000
 typedef long long int lli;
 
 int main(void) {
-  long double a, b, h, m;
-  scanf("%Lf %Lf %Lf %Lf", &a, &b, &h, &m);
-
-  long double max = max(h * 30.0 + m / 60.0 * 30.0, m * 6.0);
-  long double min = min(h * 30.0 + m / 60.0 * 30.0, m * 6.0);
-  long double rad = (max - min) / 180.0 * M_PI;
-  long double c = a * a + b * b - 2.0 * a * b * cosl(rad);
-  printf("%.10Lf\n", sqrtl(c));
+  int x;
+  scanf("%d", &x);
+  int lim;
+  rep(i, 1, 200) {
+    if (pow5(i) - pow5(i-1) < INF) continue;
+    lim = i;
+    break;
+  }
+  printf("%d\n", lim);
+  rep(i, -lim, lim) {
+    rep(j, -lim, lim) {
+      if (pow5(i) - pow5(j) == x) {
+        printf("%d %d\n", i, j);
+        goto exit;
+      }
+    }
+  }
+  exit:;
   return 0;
 }

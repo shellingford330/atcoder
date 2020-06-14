@@ -26,11 +26,11 @@ int main(void) {
   long long int a;
   double b;
   scanf("%lld %lf", &a, &b);
-  printf("%f\n", b * 100);
+  // printf("%f\n", b * 100);
 
   /* doubleからint型へのキャスト時は、誤差を加味しなければいけない */
   /* 9.9999... → 9 */
-  long long sum = (a * (int)(b * 100 + 0.5)) / 100; 
+  long long sum = (a * (long long)(b * 100.0 + 0.5)) / 100; 
   printf("%lld\n", sum);
   return 0;
 }
