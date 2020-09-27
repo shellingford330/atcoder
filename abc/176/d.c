@@ -26,7 +26,7 @@ typedef long long int lli;
 typedef struct {
   int front;
   int rear;
-  int data[16777216][2];
+  int data[20000000][2];
 } queue;
 
 queue que;
@@ -40,21 +40,32 @@ bool emptyQueue(queue *p) {
 }
 
 bool fullQueue(queue *p) {
-  return (p->front - 1 == p->rear) || (p->front == 0 && p->rear == MAX - 1);
+  return (p->front - 1 == p->rear) || (p->front == 0 && p->rear == 20000000 - 1);
 }
 
-void queuePop(queue *p) {
+void popLeft(queue *p) {
   if ( emptyQueue(p) ) {
     printf("UnderFlow\n");
     exit(1);
   } else {
     p->front++;
-    if (p->front == MAX)
+    if (p->front == 20000000)
       p->front = 0;
   }
 }
 
-void queuePush(queue *p, int y, int x) {
+void pop(queue *p) {
+  if ( emptyQueue(p) ) {
+    printf("UnderFlow\n");
+    exit(1);
+  } else {
+    p->rear--;
+    if (p->rear == -1)
+      p->rear = 20000000 - 1;
+  }
+}
+
+void push(queue *p, int y, int x) {
   if ( fullQueue(p) ) {
     printf("OverFlow\n");
     exit(1);
@@ -62,8 +73,21 @@ void queuePush(queue *p, int y, int x) {
     p->data[p->rear][0] = y;
     p->data[p->rear][1] = x;
     p->rear++;
-    if ( p->rear == MAX )
+    if ( p->rear == 20000000 )
       p->rear = 0;
+  }
+}
+
+void pushLeft(queue *p, int y, int x) {
+  if ( fullQueue(p) ) {
+    printf("OverFlow\n");
+    exit(1);
+  } else {
+    p->front--;
+    if ( p->front == -1 )
+      p->front = 20000000 - 1;
+    p->data[p->front][0] = y;
+    p->data[p->front][1] = x;
   }
 }
 
@@ -86,21 +110,18 @@ int main(void) {
   int ax[4] = {0, 1, 0, -1};
   int ay[4] = {1, 0, -1, 0};
 
-  int bx[4] = {1, 1, -1, -1};
-  int by[4] = {1, -1, -1, 1};
-
   initQueue(&que);
-  queuePush(&que, Ch-1, Cw-1);
+  pushLeft(&que, Ch-1, Cw-1);
   dist[Ch-1][Cw-1] = 0;
   while ( !emptyQueue(&que) ) {
     int y = que.data[que.front][0];
     int x = que.data[que.front][1];
-    queuePop(&que);
+    popLeft(&que);
     if ( y == Dh-1 && x == Dw-1 ) {
       printf("%d\n", dist[y][x]);
       return 0;
     }
-    for (int i = 0; i < 4; i++) {
+    rep(i, 0, 4) {
       int ny = y + ay[i];
       int nx = x + ax[i];
       if ( ny < 0 || H <= ny ) continue;
@@ -108,18 +129,18 @@ int main(void) {
       if ( S[ny][nx] == '#' ) continue;
       if ( dist[ny][nx] <= dist[y][x] ) continue;
       dist[ny][nx] = dist[y][x];
-      queuePush(&que, ny, nx); 
+      pushLeft(&que, ny, nx); 
     }
 
-    for (int i = 0; i < 4; i++) {
-      int ny = y + by[i];
-      int nx = x + bx[i];
+    rep(by, -2, 3) rep(bx, -2, 3) {
+      int ny = y + by;
+      int nx = x + bx;
       if ( ny < 0 || H <= ny ) continue;
       if ( nx < 0 || W <= nx ) continue;
       if ( S[ny][nx] == '#' ) continue;
       if ( dist[ny][nx] <= dist[y][x] + 1 ) continue;
       dist[ny][nx] = dist[y][x] + 1;
-      queuePush(&que, ny, nx);
+      push(&que, ny, nx);
     }
   }
   printf("-1\n");
